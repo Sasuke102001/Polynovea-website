@@ -13,16 +13,16 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Polynovea — Music Intelligence Platform",
+  title: "Polynovea — Behavioral Intelligence Framework",
   description:
-    "Not creative. Not consulting. Something else. The behavioral intelligence layer that converts shows into measurable outcomes.",
+    "An AI and data company building the behavioral intelligence layer. We observe decisions, extract patterns, and convert them into repeatable frameworks — across domains.",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
     title: "Polynovea",
-    description: "Music Intelligence Platform",
+    description: "Behavioral Intelligence Framework",
     siteName: "Polynovea",
     images: [{ url: "/logo.png" }],
   },
