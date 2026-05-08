@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
 const CONTACT_EMAIL = "subrojitroy@polynovearecords.in";
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const GMAIL_EMAIL = process.env.GMAIL_EMAIL;
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 
 interface ContactFormData {
   name: string;
@@ -10,6 +12,21 @@ interface ContactFormData {
   interest: string;
   message: string;
 }
+
+// Create transporter for Gmail
+const createTransporter = () => {
+  if (!GMAIL_EMAIL || !GMAIL_APP_PASSWORD) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: GMAIL_EMAIL,
+      pass: GMAIL_APP_PASSWORD,
+    },
+  });
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,17 +40,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If Resend is configured, use it
-    if (RESEND_API_KEY) {
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'noreply@polynovearecords.in',
+    // If Gmail credentials are configured, send email
+    const transporter = createTransporter();
+    if (transporter) {
+      try {
+        await transporter.sendMail({
+          from: GMAIL_EMAIL,
           to: CONTACT_EMAIL,
+          replyTo: body.email,
           subject: `New Contact: ${body.who} - ${body.interest}`,
           html: `
             <h2>New Contact Submission</h2>
@@ -44,27 +58,23 @@ export async function POST(request: NextRequest) {
             <h3>Message:</h3>
             <p>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>
           `,
-          reply_to: body.email,
-        }),
-      });
+        });
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Resend API error:', error);
+        return NextResponse.json(
+          { success: true, message: 'Email sent successfully' },
+          { status: 200 }
+        );
+      } catch (emailError) {
+        console.error('Email sending error:', emailError);
         return NextResponse.json(
           { error: 'Failed to send email' },
           { status: 500 }
         );
       }
-
-      return NextResponse.json(
-        { success: true, message: 'Email sent successfully' },
-        { status: 200 }
-      );
     }
 
-    // Fallback: Log the submission if Resend is not configured
-    console.log('Contact form submission received:', {
+    // Fallback: Log the submission if Gmail is not configured
+    console.log('Contact form submission received (email not configured):', {
       timestamp: new Date().toISOString(),
       ...body,
     });

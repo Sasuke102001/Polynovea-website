@@ -1,94 +1,105 @@
 # Contact Form Email Setup
 
-The contact form now submits to a backend API that sends emails. To enable email notifications, you need to set up Resend.
+The contact form now submits to a backend API that sends emails using **Gmail SMTP**. This requires your Gmail account and an app password (more secure than your actual password).
 
-## Quick Setup (2 minutes)
+## Quick Setup (5 minutes)
 
-### 1. Sign Up for Resend
+### Step 1: Generate Gmail App Password
 
-1. Go to [resend.com](https://resend.com)
-2. Click "Get Started"
-3. Sign up with email (free tier available)
-4. Verify your email
+Gmail requires an "App Password" for third-party apps. This is different from your Gmail password.
 
-### 2. Create API Key
+1. Go to [myaccount.google.com](https://myaccount.google.com)
+2. Click **Security** (left sidebar)
+3. Enable **2-Step Verification** if you haven't already
+   - Google will prompt you through the process
+4. After 2-Step is enabled, scroll down and find **App passwords**
+5. Select:
+   - **App**: Mail
+   - **Device**: Windows Computer (or your device type)
+6. Click **Generate**
+7. **Copy the 16-character password** that appears
+   - It will look like: `abcd efgh ijkl mnop`
 
-1. In Resend dashboard, go to **API Keys**
-2. Click **Create API Key**
-3. Copy the API key
-
-### 3. Add to Vercel
+### Step 2: Add to Vercel
 
 For **Production** (polynovearecords.in):
 
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Select **polynovea-web** project
 3. Go to **Settings** → **Environment Variables**
-4. Add new variable:
-   - **Name**: `RESEND_API_KEY`
-   - **Value**: (paste your API key)
+4. Add two new variables:
+
+   **Variable 1:**
+   - **Name**: `GMAIL_EMAIL`
+   - **Value**: `subrojitroy101@gmail.com` (your Gmail)
    - **Environments**: Check "Production"
+
+   **Variable 2:**
+   - **Name**: `GMAIL_APP_PASSWORD`
+   - **Value**: (paste the 16-character app password)
+   - **Environments**: Check "Production"
+
 5. Click **Save**
-6. Redeploy the project
+6. Vercel will auto-redeploy
 
 For **Development** (.env.local):
 
 1. Open `.env.local` in your project
-2. Uncomment and update:
+2. Uncomment and fill in:
    ```
-   RESEND_API_KEY=your_api_key_here
+   GMAIL_EMAIL=subrojitroy101@gmail.com
+   GMAIL_APP_PASSWORD=abcd efgh ijkl mnop
    ```
-3. Run `npm run dev` to test
+3. Run `npm run dev` to test locally
 
-### 4. Verify Setup
+### Step 3: Test the Form
 
-Test the contact form:
-1. Go to polynovearecords.in/contact
-2. Fill out and submit the form
-3. Check `subrojitroy@polynovearecords.in` for the email
+1. Go to polynovearecords.in/contact (or Vercel URL if domain not live)
+2. Fill out and submit the contact form
+3. Check your Gmail inbox for the test email
+4. Email should be from `subrojitroy101@gmail.com` with reply-to set to the form user's email
 
-## Email Limits
+## How It Works
 
-**Resend Free Tier:**
-- Up to 100 emails/day
-- Perfect for a new website
-- Upgrade later if needed
-
-## Sender Email
-
-The contact form sends from `noreply@polynovearecords.in`.
-
-To customize this:
-1. In Resend dashboard, add your custom domain
-2. Update `from` field in `/app/api/contact/route.ts`
+- User submits contact form
+- Email sent to `subrojitroy@polynovearecords.in` via Gmail SMTP
+- Reply-to automatically set to user's email for easy responses
+- Email appears as coming from your Gmail account
 
 ## Troubleshooting
 
 ### "Email service not yet configured"
-- RESEND_API_KEY is not set
-- Check Vercel environment variables
-- Run local build: `npm run build`
+- GMAIL_EMAIL or GMAIL_APP_PASSWORD not set in Vercel
+- Check environment variables
+- Redeploy after adding them
 
 ### Emails not arriving
-- Check spam/promotions folder
-- Verify API key is correct
-- Check Resend dashboard for failures
+- Check Gmail spam folder
+- Verify app password is exactly 16 characters (without spaces)
+- Check that 2-Step Verification is enabled
+- Try resetting app password and regenerating
 
-### Custom domain setup
-- Resend has guides for adding verified senders
-- Needed for higher deliverability
-- Free tier can use `noreply@polynovearecords.in` temporarily
+### "Invalid login" error
+- App password was incorrectly copied (missing characters)
+- 2-Step Verification is disabled
+- Check that it's the 16-char app password, not your Gmail password
 
-## Contact Form Behavior
+### Email sender shows Gmail address
+- This is normal with Gmail SMTP
+- The form user's email is in "Reply-To" for easy responses
 
-Without RESEND_API_KEY:
-- Form submits successfully ✅
-- Message is logged to console
-- User sees "Submission received" message
-- Email NOT sent (requires API key)
+## Limits
 
-With RESEND_API_KEY:
-- Form submits successfully ✅
-- Email sent to `subrojitroy@polynovearecords.in` ✅
-- Reply-to set to user's email ✅
-- User sees success message ✅
+**Gmail Free Tier:**
+- Up to 500 emails/day (way more than needed)
+- No extra sign-ups or costs
+- Uses your existing Gmail account
+
+## Future: Custom Sender Domain
+
+Later, if you want to send from `noreply@polynovearecords.in`:
+- Use a service like Resend or SendGrid
+- Add custom domain verification
+- Update the API code to use that service
+
+For now, Gmail SMTP is the simplest solution.
