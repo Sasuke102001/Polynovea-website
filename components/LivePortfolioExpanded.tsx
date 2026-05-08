@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const API_BASE = "https://polynovea-admin.vercel.app/api/content";
+const API_BASE = "https://polynovea-admin-488b.vercel.app/api/content";
 
 interface LiveEvent {
   id: string;

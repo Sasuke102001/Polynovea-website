@@ -25,7 +25,7 @@ export default function BlogPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("https://polynovea-admin.vercel.app/api/content/blog-posts");
+        const response = await fetch("https://polynovea-admin-488b.vercel.app/api/content/blog-posts");
         const data = await response.json();
         const published = data.data?.filter((p: BlogPost) => p.status === "published") || [];
         setPosts(published);
