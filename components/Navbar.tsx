@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const homeLinks = [
   { href: "/", label: "Home" },
@@ -40,6 +41,14 @@ export default function Navbar() {
       <nav ref={navRef} className={`navbar${scrolled ? " scrolled" : ""}`}>
         <div className="nav-inner">
           <Link href="/" className="nav-logo">
+            <Image
+              src="/logo.png"
+              alt="Polynovea"
+              width={32}
+              height={32}
+              className="nav-logo-img"
+              priority
+            />
             Polynovea
           </Link>
 
@@ -139,6 +148,14 @@ export default function Navbar() {
           color: var(--text-primary);
           letter-spacing: -0.02em;
           margin-right: auto;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .nav-logo :global(.nav-logo-img) {
+          border-radius: 8px;
+          flex-shrink: 0;
         }
 
         .nav-links {

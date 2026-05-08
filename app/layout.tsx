@@ -16,10 +16,15 @@ export const metadata: Metadata = {
   title: "Polynovea — Music Intelligence Platform",
   description:
     "Not creative. Not consulting. Something else. The behavioral intelligence layer that converts shows into measurable outcomes.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     title: "Polynovea",
     description: "Music Intelligence Platform",
     siteName: "Polynovea",
+    images: [{ url: "/logo.png" }],
   },
 };
 
