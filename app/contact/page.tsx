@@ -19,22 +19,40 @@ export default function ContactPage() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const who = formData.get("who");
-    const interest = formData.get("interest");
-    const message = formData.get("message");
-
-    const subject = encodeURIComponent(`New Contact: ${who} - ${interest}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nWho: ${who}\nInterest: ${interest}\n\nMessage:\n${message}`
-    );
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const who = formData.get("who") as string;
+    const interest = formData.get("interest") as string;
+    const message = formData.get("message") as string;
 
     try {
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          who,
+          interest,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
       setSubmitted(true);
-    } catch {
-      setError("Something went wrong. Please email us directly at " + CONTACT_EMAIL);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please email us directly at " + CONTACT_EMAIL
+      );
     } finally {
       setLoading(false);
     }
@@ -65,7 +83,7 @@ export default function ContactPage() {
               </div>
               <div className="direct-email">
                 <p>Or reach us directly:</p>
-                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+                <p style={{ color: "var(--accent-intelligence)", margin: 0 }}>{CONTACT_EMAIL}</p>
               </div>
             </div>
 
