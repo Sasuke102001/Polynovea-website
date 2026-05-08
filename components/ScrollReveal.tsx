@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ScrollReveal() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const init = async () => {
       const { gsap } = await import("gsap");
@@ -42,7 +45,7 @@ export default function ScrollReveal() {
         ScrollTrigger.getAll().forEach((t) => t.kill())
       );
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
