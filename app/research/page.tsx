@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const ResearchScene = dynamic(() => import("@/components/ResearchScene"), { ssr: false });
 
@@ -146,13 +147,13 @@ export default function ResearchPage() {
   return (
     <>
       <style jsx global>{`
-        html, body { margin: 0; padding: 0; overflow: hidden; }
-
         .rp-shell {
-          position: fixed; inset: 0;
+          position: relative;
+          min-height: calc(100vh - var(--nav-height));
           background: #0A0A0A;
           display: flex; flex-direction: column;
           font-family: "Clash Display", sans-serif;
+          overflow: hidden;
         }
 
         .rp-bar { position: relative; z-index: 20; height: 2px; background: rgba(255,255,255,0.06); flex-shrink: 0; }
@@ -181,7 +182,9 @@ export default function ResearchPage() {
         .rp-area {
           flex: 1; position: relative; z-index: 10;
           display: flex; align-items: center; justify-content: center;
-          overflow: hidden; padding: 48px 32px 72px;
+          overflow: hidden;
+          min-height: calc(100vh - var(--nav-height) - 2px);
+          padding: 48px 32px 72px;
         }
 
         .rp-wrap {
@@ -348,6 +351,8 @@ export default function ResearchPage() {
         }
       `}</style>
 
+      <Navbar />
+
       <div className="rp-shell">
         <ResearchScene pulseRef={pulseRef} />
         <div className="rp-vignette" />
@@ -474,13 +479,14 @@ export default function ResearchPage() {
                 )}
                 {emailDone && <p className="rp-ty-msg">You&apos;re on the list. We&apos;ll be in touch.</p>}
                 {declined && <p className="rp-ty-msg">That&apos;s okay. Glad you shared your thoughts — it matters more than you&apos;d think.</p>}
-                <Link href="/" className="rp-ty-back">← Back to Polynovea</Link>
               </>
             )}
 
           </div>
         </div>
       </div>
+
+      <Footer />
     </>
   );
 }
