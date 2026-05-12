@@ -43,11 +43,13 @@ const TOTAL = KEYED.length;
 function pct(idx: number) {
   if (idx === 0) return 0;
   if (idx >= STEPS.length - 1) return 100;
-  const pos = KEYED.indexOf(STEPS[idx]);
+  const cur = STEPS[idx];
+  const pos = KEYED.findIndex(s => s === cur);
   return pos === -1 ? 100 : Math.round(((pos + 1) / TOTAL) * 100);
 }
 function qlabel(idx: number) {
-  const pos = KEYED.indexOf(STEPS[idx]);
+  const cur = STEPS[idx];
+  const pos = KEYED.findIndex(s => s === cur);
   return pos === -1 ? "" : `Q${pos + 1} of ${TOTAL}`;
 }
 
