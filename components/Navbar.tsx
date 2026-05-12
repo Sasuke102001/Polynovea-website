@@ -11,6 +11,7 @@ const homeLinks = [
   { href: "/live-portfolio", label: "Live Portfolio" },
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
+  { href: "/research", label: "Research" },
 ];
 
 export default function Navbar() {
